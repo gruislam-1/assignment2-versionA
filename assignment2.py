@@ -2,19 +2,19 @@
 
 '''
 OPS445 Assignment 2
-Program: assignment2.py 
-Author: "Student Name"
-Semester: "Enter Winter/Summer/Fall Year"
+Program: assignment2.py
+Author: G.M. REZWAN UL ISLAM
+Semester: Fall 2024
 
 The python code in this file is original work written by
-"Student Name". No code in this file is copied from any other source 
-except those provided by the course instructor, including any person, 
-textbook, or on-line resource. I have not shared this python script 
-with anyone or anything except for submission for grading.  
-I understand that the Academic Honesty Policy will be enforced and 
+"G.M. REZWAN UL ISLAM". No code in this file is copied from any other source
+except those provided by the course instructor, including any person
+textbook, or on-line resource. I have not shared this python script
+with anyone or anything except for submission for grading.
+I understand that the Academic Honesty Policy will be enforced and
 violators will be reported and appropriate action will be taken.
 
-Description: <Enter your documentation here>
+Description: assignment2-versionA
 
 '''
 
@@ -36,7 +36,17 @@ def parse_command_args() -> object:
 
 def percent_to_graph(percent: float, length: int=20) -> str:
     "turns a percent 0.0 - 1.0 into a bar graph"
-    ...
+    if percent < 0.0:
+        percent = 0.0
+    elif percent > 1.0:
+        percent = 1.0
+
+    # Calculate for hash symbols
+    hash_symbol = int(percent * length)
+    # Making the graph with hash symbols and spaces
+    graph = "#" * hash_symbol + " " * (length - hash_symbol)
+
+    return graph
 # percent to graph function
 
 def get_sys_mem() -> int:
@@ -59,7 +69,7 @@ def bytes_to_human_r(kibibytes: int, decimal_places: int=2) -> str:
     "turn 1,024 into 1 MiB, for example"
     suffixes = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB']  # iB indicates 1024
     suf_count = 0
-    result = kibibytes 
+    result = kibibytes
     while result > 1024 and suf_count < len(suffixes):
         result /= 1024
         suf_count += 1
@@ -74,7 +84,7 @@ if __name__ == "__main__":
     else:
         ...
     # process args
-    # if no parameter passed, 
+    # if no parameter passed,
     # open meminfo.
     # get used memory
     # get total memory
