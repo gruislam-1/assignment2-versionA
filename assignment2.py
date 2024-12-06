@@ -132,10 +132,57 @@ def bytes_to_human_r(kibibytes: int, decimal_places: int=2) -> str:
 
 if __name__ == "__main__":
     args = parse_command_args()
+
+    # Memory usage when specific program is not provided
     if not args.program:
-        ...
+        total_memory = get_sys_mem()  # Total memory
+        free_memory = get_avail_mem()  # Available free memory
+        used_memory = total_memory - free_memory  # Used memory
+        memory_percent = used_memory / total_memory  # Get the percentage
+        memory_graph = percent_to_graph(memory_percent, args.length)  # Getting the graph
+
+        # Memory used in total
+        if args.human_readable:
+            total_memory_hr = bytes_to_human_r(total_memory)
+            used_memory_hr = bytes_to_human_r(used_memory)
+            print(f"Memory         [{memory_graph} | {int(memory_percent * 100)}%] {used_memory_hr}/{total_memory_hr}") # Print in human readable format
+        else:
+            print(f"Memory         [{memory_graph} | {int(memory_percent * 100)}%] {used_memory}/{total_memory}")
+
     else:
-        ...
+        # Memory usage when specific program is provided
+        process_ids = pids_of_prog(args.program)  # Program PIDs
+
+        if not process_ids:
+            print(f"{args.program} not found.")  # Program PIDs not found/available
+        else:
+            total_program_memory = 0  # To calculate/load the total memory used
+            total_memory = get_sys_mem()  # Getting the total memory
+
+            # Calculate the memory used by the PIDs
+            for pid in process_ids:
+                process_memory = rss_mem_of_pid(pid)  # Resident memory
+                total_program_memory += process_memory  # Add the process memory
+                memory_percent = process_memory / total_memory  # Calculate the percentage of memory
+                memory_graph = percent_to_graph(memory_percent, args.length)  # The Graph
+
+                # Memory used by the PIDs
+                if args.human_readable:
+                    process_memory_hr = bytes_to_human_r(process_memory)
+                    total_memory_hr = bytes_to_human_r(total_memory)
+                    print(f"PID {pid}      [{memory_graph} | {int(memory_percent * 100)}%] {process_memory_hr}/{total_memory_hr}") # Print in human readable format
+                else:
+                    print(f"PID {pid}      [{memory_graph} | {int(memory_percent * 100)}%] {process_memory}/{total_memory}")
+
+            # Memory used in total by the PIDs of the program
+            if args.human_readable:
+                total_program_memory_hr = bytes_to_human_r(total_program_memory)
+                total_memory_hr = bytes_to_human_r(total_memory)
+                print(f"{args.program} total memory used: {total_program_memory_hr}/{total_memory_hr}") # Print in human readable format
+            else:
+                print(f"{args.program} total memory used: {total_program_memory}/{total_memory}")
+
+
     # process args
     # if no parameter passed,
     # open meminfo.
